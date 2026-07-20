@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-gray-100 flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-20 bg-black text-white flex flex-col items-center py-10 space-y-8">
+        <div class="text-2xl font-bold">D</div>
+        <div class="space-y-6 text-gray-400">
+            <!-- Add icons here -->
+            <div class="cursor-pointer hover:text-white">🏠</div>
+            <div class="cursor-pointer hover:text-white">📊</div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+        <h1 class="text-2xl font-bold mb-6">Good morning, User!</h1>
+        
+        <!-- Bento Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- KPI Cards -->
+            <div class="glass p-6 rounded-3xl shadow-sm border border-gray-200">
+                <h3 class="text-gray-500">Portfolio Value</h3>
+                <p class="text-3xl font-bold">$12,450.00</p>
+            </div>
+            
+            <!-- Chart Widget (Spans 2 columns) -->
+            <div class="md:col-span-2 glass p-6 rounded-3xl shadow-sm border border-gray-200">
+                <canvas id="myChart" height="80"></canvas>
+            </div>
+
+            <!-- List Widget -->
+            <div class="md:col-span-3 glass p-6 rounded-3xl shadow-sm border border-gray-200">
+                <h2 class="font-bold mb-4">Recent Market Activity</h2>
+                <!-- Add a table or list here -->
+            </div>
+        </div>
+    </main>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        fetch('http://127.0.0.1:8000/api/data')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Asset Price',
+                            data: data.values,
+                            borderColor: '#3b82f6',
+                            tension: 0.3,
+                            fill: true,
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            })
+            .catch(err => console.error("Fetch error:", err));
+    </script>
+</body>
+</html>
