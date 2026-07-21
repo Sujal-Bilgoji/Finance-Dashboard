@@ -112,7 +112,7 @@ function updateDashboard() {
             document.getElementById('timestamp').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
             // Update total value
-            const latestPrice = data.values[data.values.length - 1];
+            const latestPrice = parseFloat(data.values[data.values.length - 1]);
             document.getElementById('totalValue').innerText = "$" + latestPrice.toLocaleString(undefined, {minimumFractionDigits: 2});
             
             // Update Chart (destroying it first to prevent flickering)
