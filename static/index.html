@@ -105,7 +105,7 @@
 
         // Function to update dashboard
 function updateDashboard() {
-    fetch('https://finance-dashboard-api-o4lf.onrender.com')
+    fetch('https://finance-dashboard-api-o4lf.onrender.com/api/data')
         .then(response => response.json())
         .then(data => {
             // Update timestamp
