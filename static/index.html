@@ -104,30 +104,34 @@
         document.getElementById('timestamp').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
         // Function to update dashboard
+// Function to update dashboard
 function updateDashboard() {
     fetch('https://finance-dashboard-api-o4lf.onrender.com/api/data')
-        .then(response => response.json())
-        .then(data => {
-            // Update timestamp
-            document.getElementById('timestamp').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            // Update total value
-            const latestPrice = parseFloat(data.values[data.values.length - 1]);
-            document.getElementById('totalValue').innerText = "$" + latestPrice.toLocaleString(undefined, {minimumFractionDigits: 2});
-            
-            // Update Chart (destroying it first to prevent flickering)
-            const ctx = document.getElementById('myChart');
-            if (window.myChartInstance) window.myChartInstance.destroy();
-            
-            window.myChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: { 
-                    labels: data.labels, 
-                    datasets: [{ data: data.values, borderColor: '#4f46e5', borderWidth: 3, tension: 0.4, fill: true, backgroundColor: 'rgba(99, 102, 241, 0.1)' }] 
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
+    .then(response => response.json())
+    .then(data => {
+        // Convert all values to numbers immediately
+        data.values = data.values.map(val => parseFloat(val));
+
+        // Update timestamp
+        document.getElementById('timestamp').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        // Update total value
+        const latestPrice = data.values[data.values.length - 1];
+        document.getElementById('totalValue').innerText = "$" + latestPrice.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+        // Update Chart (destroying it first to prevent flickering)
+        const ctx = document.getElementById('myChart');
+        if (window.myChartInstance) window.myChartInstance.destroy();
+
+        window.myChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.labels,
+                datasets: [{ data: data.values, borderColor: '#4f46e5', borderWidth: 3, tension: 0.4, fill: true, backgroundColor: 'rgba(99, 102, 241, 0.1)' }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
         });
+    });
 }
 
 // Initial call and set interval to 30 seconds
